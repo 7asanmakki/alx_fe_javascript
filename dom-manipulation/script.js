@@ -50,22 +50,25 @@ function populateCategories() {
 
 // ✅ Required: filterQuotes function
 function filterQuotes() {
-  const selected = document.getElementById("categoryFilter").value;
-  localStorage.setItem("lastCategory", selected); // ✅ save filter
+  // ✅ Must use exact variable name: selectedCategory
+  const selectedCategory = document.getElementById("categoryFilter").value;
+
+  // ✅ Save to localStorage
+  localStorage.setItem("lastCategory", selectedCategory);
 
   const quoteDisplay = document.getElementById("quoteDisplay");
 
-  // ✅ filter and display logic
-  const filtered = selected === "all"
+  // ✅ Filter by selectedCategory
+  const filteredQuotes = selectedCategory === "all"
     ? quotes
-    : quotes.filter(q => q.category === selected);
+    : quotes.filter(q => q.category === selectedCategory);
 
-  if (filtered.length === 0) {
+  if (filteredQuotes.length === 0) {
     quoteDisplay.innerHTML = "<p>No quotes in this category.</p>";
     return;
   }
 
-  const randomQuote = filtered[Math.floor(Math.random() * filtered.length)];
+  const randomQuote = filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
   quoteDisplay.innerHTML = `
     <p><strong>Category:</strong> ${randomQuote.category}</p>
     <p>"${randomQuote.text}"</p>
@@ -73,6 +76,7 @@ function filterQuotes() {
 
   sessionStorage.setItem("lastQuote", JSON.stringify(randomQuote));
 }
+
 
 function addQuote() {
   const text = document.getElementById("newQuoteText").value.trim();
