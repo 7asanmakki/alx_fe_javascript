@@ -7,20 +7,35 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      margin: 2rem;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      background-color: #f8f8f8;
     }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
     #quoteDisplay {
-      border: 1px solid #ccc;
+      background: white;
+      border-left: 5px solid #007bff;
       padding: 1rem;
       margin-bottom: 1rem;
     }
-    input {
-      margin: 0.25rem;
+
+    select, input, button {
       padding: 0.5rem;
+      margin: 0.3rem 0.3rem 0.3rem 0;
+      font-size: 1rem;
     }
+
+    #categoryFilter {
+      margin-bottom: 1rem;
+    }
+
     button {
-      margin: 0.25rem;
-      padding: 0.5rem 1rem;
       cursor: pointer;
     }
   </style>
@@ -29,21 +44,27 @@
 
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Where the quote appears -->
-  <div id="quoteDisplay"></div>
+  <!-- ✅ Filter Dropdown -->
+  <label for="categoryFilter">Filter by Category:</label>
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+  </select>
 
-  <!-- Show random quote -->
+  <!-- ✅ Display Area -->
+  <div id="quoteDisplay">No quote yet.</div>
+
+  <!-- ✅ New Random Quote -->
   <button id="newQuote">Show New Quote</button>
 
-  <!-- Export and Import -->
-  <div style="margin-top: 1rem;">
+  <!-- ✅ JSON Tools -->
+  <div style="margin-top: 1.5rem;">
     <button id="exportBtn">Export Quotes (JSON)</button>
     <input type="file" id="importFile" accept=".json" />
   </div>
 
-  <!-- The add quote form is inserted dynamically with JS -->
+  <!-- 🧠 Form for adding quotes is inserted by JS -->
 
-  <!-- Load main JavaScript -->
+  <!-- ✅ Script -->
   <script src="script.js"></script>
 </body>
 </html>
