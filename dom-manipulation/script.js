@@ -83,8 +83,8 @@ function addQuote() {
   document.getElementById("newQuoteText").value = "";
   document.getElementById("newQuoteCategory").value = "";
 
-  // Optionally simulate sending to server (not called by default)
-  // postQuoteToServer(newQuote);
+  // Optional: simulate server post
+  postQuoteToServer(newQuote);
 }
 
 // === Create form dynamically
@@ -158,46 +158,49 @@ function loadLastSessionQuote() {
   }
 }
 
-// ✅ Task 4: Server Fetch
-function fetchQuotesFromServer() {
-  return fetch("https://dummyjson.com/quotes")
-    .then(res => res.json())
-    .then(data => {
-      return data.quotes.map(q => ({
-        text: q.quote,
-        category: q.author || "Uncategorized"
-      }));
-    })
-    .catch(err => {
-      console.error("Failed to fetch quotes from server:", err);
-      return [];
+// ✅ Task 4: Fetch from mock API using async/await
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const data = await response.json();
+    return data.slice(0, 10).map(post => ({
+      text: post.title,
+      category: "Server"
+    }));
+  } catch (error) {
+    console.error("Error fetching from server:", error);
+    return [];
+  }
+}
+
+// ✅ Task 4: POST to mock API using async/await
+async function postQuoteToServer(quote) {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quote)
     });
+    const result = await response.json();
+    console.log("Posted to server:", result);
+  } catch (err) {
+    console.error("Failed to post:", err);
+  }
 }
 
-// ✅ Task 4: Server POST (required by checker)
-function postQuoteToServer(quote) {
-  fetch("https://dummyjson.com/quotes/add", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(quote)
-  })
-    .then(res => res.json())
-    .then(data => console.log("Posted to server:", data))
-    .catch(err => console.error("Post failed:", err));
-}
+// ✅ Task 4: syncQuotes function
+async function syncQuotes() {
+  const serverQuotes = await fetchQuotesFromServer();
 
-// ✅ Task 4: Sync quotes from server every minute
-function syncQuotes() {
-  fetchQuotesFromServer().then(serverQuotes => {
-    // Simple conflict resolution: server wins
-    quotes = serverQuotes;
-    saveQuotes();
-    populateCategories();
-    filterQuotes();
-    alert("Quotes synced with server.");
-  });
+  // Conflict resolution: server wins
+  quotes = serverQuotes;
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+  populateCategories();
+  filterQuotes();
+
+  alert("Quotes synced with server!");
 }
 
 // === Init
@@ -210,5 +213,5 @@ populateCategories();
 createAddQuoteForm();
 loadLastSessionQuote();
 filterQuotes();
-syncQuotes(); // fetch once
-setInterval(syncQuotes, 60000); // fetch every 60 sec
+syncQuotes();
+setInterval(syncQuotes, 60000); // every 60s
